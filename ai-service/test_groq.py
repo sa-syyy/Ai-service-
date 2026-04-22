@@ -1,15 +1,8 @@
-import os
-from groq import Groq
-from dotenv import load_dotenv
+from services.groq_client import GroqClient
 
-load_dotenv()
-
-api_key = os.getenv("GROQ_API_KEY")
-
-print("API KEY LOADED:", api_key is not None)
 print("AI is ready. How can I assist you?")
 
-client = Groq(api_key=api_key)
+client = GroqClient()
 
 while True:
     user_input = input("\nYou: ")
@@ -18,11 +11,5 @@ while True:
         print("Exiting...")
         break
 
-    response = client.chat.completions.create(
-        model="openai/gpt-oss-120b",
-        messages=[
-            {"role": "user", "content": user_input}
-        ]
-    )
-
-    print("AI:", response.choices[0].message.content)
+    response = client.generate_response(user_input)
+    print("AI:", response)
