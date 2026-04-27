@@ -9,9 +9,12 @@ app = Flask(__name__)
 groq = GroqClient()
 chroma = ChromaService()
 
-# 🔥 Add initial data (so DB is not empty)
+# 🔥 Initial data (expanded for better retrieval)
 chroma.add_text("Unauthorized transaction detected", "1")
 chroma.add_text("Payment failed due to network error", "2")
+chroma.add_text("Payment stuck but money deducted", "3")
+chroma.add_text("App crashes during login due to server timeout", "4")
+chroma.add_text("Account blocked due to suspicious activity", "5")
 
 
 @app.route('/')
@@ -63,7 +66,7 @@ Text: {user_input}
         }), 500
 
 
-# 🔥 Day 5 — RAG Query API
+# 🔥 Day 5 + Day 6 — RAG Query API (FIXED + IMPROVED)
 @app.route('/query', methods=['POST'])
 def query():
     try:
@@ -74,16 +77,33 @@ def query():
 
         question = data.get("question")
 
-        # 🔹 Step 1: Get similar docs
+        # 🔹 Step 1: Retrieve documents from ChromaDB
         results = chroma.query_with_docs(question)
-        docs = results["documents"]
 
-        # 🔹 Step 2: Build context
-        context = "\n".join(docs)
+        # 🔥 SAFE extraction of documents
+        documents = []
+        if results and "documents" in results:
+            if len(results["documents"]) > 0:
+                documents = results["documents"][0]
 
-        # 🔹 Step 3: Create prompt
+        # 🔹 Step 2: Handle no results
+        if not documents:
+            return jsonify({
+                "answer": "No relevant data found",
+                "sources": []
+            })
+
+        # 🔹 Step 3: Build context
+        context = "\n".join(documents)
+
+        # 🔹 Step 4: Prompt tuning (Day 6 improvement)
         prompt = f"""
-Answer the question using the context below.
+Answer the question using ONLY the context below.
+
+Rules:
+- Answer in 1 short line
+- Do NOT explain
+- Do NOT add extra information
 
 Context:
 {context}
@@ -92,12 +112,13 @@ Question:
 {question}
 """
 
-        # 🔹 Step 4: Call Groq
+        # 🔹 Step 5: Call LLM
         response = groq.generate_response(prompt)
 
+        # 🔹 Step 6: Return clean structured response
         return jsonify({
-            "answer": response,
-            "sources": docs
+            "answer": response.strip(),
+            "sources": documents
         })
 
     except Exception as e:
