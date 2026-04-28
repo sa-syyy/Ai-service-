@@ -11,7 +11,7 @@ def before():
         return result
 
 @generate_bp.route("/generate-report", methods=["POST"])
-@limiter.limit("3 per minute")   # ✅ THIS is your Day 4 task
+@limiter.limit("3 per minute")   
 def generate_report():
     data = request.cleaned_data
 
