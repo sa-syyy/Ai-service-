@@ -36,3 +36,10 @@ class ChromaService:
             "documents": results.get("documents", [[]])[0],
             "ids": results.get("ids", [[]])[0]
         }
+
+    # 🔥 Day 7 — Get document count
+    def get_count(self):
+        try:
+            return self.collection.count()
+        except:
+            return 0

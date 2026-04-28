@@ -14,9 +14,12 @@ class GroqClient:
 
         self.client = Groq(api_key=api_key)
 
+        # 🔥 Day 7 — expose model name
+        self.model = "openai/gpt-oss-120b"
+
     def generate_response(self, user_input):
         response = self.client.chat.completions.create(
-            model="openai/gpt-oss-120b",
+            model=self.model,
             messages=[
                 {"role": "user", "content": user_input}
             ]
