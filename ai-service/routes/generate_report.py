@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from middleware.sanitizer import sanitize_request
-from extensions import limiter 
+from extensions import limiter
 
 generate_bp = Blueprint("generate", __name__)
 
@@ -11,9 +11,9 @@ def before():
         return result
 
 @generate_bp.route("/generate-report", methods=["POST"])
-@limiter.limit("3 per minute")   
+@limiter.limit("3 per minute")
 def generate_report():
-    data = request.cleaned_data
+    data = getattr(request, "cleaned_data", {})  # safer access
 
     return jsonify({
         "message": "Report generated successfully",

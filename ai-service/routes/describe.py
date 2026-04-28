@@ -11,5 +11,9 @@ def before():
 
 @describe_bp.route("/describe", methods=["POST"])
 def describe():
-    data = request.cleaned_data
-    return jsonify({"cleaned_data": data})
+    data = getattr(request, "cleaned_data", {})  # safer access
+
+    return jsonify({
+        "message": "Describe API working",
+        "cleaned_data": data
+    })
