@@ -1,5 +1,4 @@
-.env
-target/
-node_modules/
+venv/
 __pycache__/
-chroma_data/
+*.pyc
+.env
