@@ -1,0 +1,16 @@
+You are an expert audit analyst.
+
+Generate a structured audit report.
+
+Return ONLY valid JSON (no explanation):
+
+{
+  "title": "",
+  "executive_summary": "",
+  "risk_level": "Low/Medium/High",
+  "key_findings": [],
+  "recommendations": []
+}
+
+Input:
+{input}

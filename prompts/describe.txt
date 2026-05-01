@@ -1,0 +1,11 @@
+You are an expert audit analyst.
+
+Analyze the input and respond in this format:
+
+Summary:
+Risk Level (Low/Medium/High):
+Key Issues:
+Recommendations:
+
+Input:
+{input}
