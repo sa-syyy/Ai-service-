@@ -5,8 +5,7 @@ describe_bp = Blueprint('describe', __name__)
 
 @describe_bp.route("/describe", methods=["POST"])
 def describe():
-    print(request.json)   # 👈 ADD THIS LINE
-    data = request.get_json().get("input")
+    data = request.json.get("input")
 
     with open("prompts/describe.txt") as f:
         prompt = f.read().replace("{input}", data)
